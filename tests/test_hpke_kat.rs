@@ -64,6 +64,10 @@ fn kat<Crypto: HpkeCrypto + 'static>(tests: Vec<HpkeTestVector>) {
     // Replace into_par_iter() with into_iter() to run tests sequentially.
     // tests.into_par_iter().for_each(|test| {
     tests.into_iter().for_each(|test| {
+        println!(
+            "Testing mode {:?} with ciphersuite {:?}_{:?}_{:?}",
+            test.mode, test.kem_id, test.kdf_id, test.aead_id
+        );
         let mode: HpkeMode = test.mode.try_into().unwrap();
         let kem_id: KemAlgorithm = test.kem_id.try_into().unwrap();
         let kdf_id: KdfAlgorithm = test.kdf_id.try_into().unwrap();
@@ -153,9 +157,9 @@ fn kat<Crypto: HpkeCrypto + 'static>(tests: Vec<HpkeTestVector>) {
 
         // Check setup info
         // Note that key and nonce are empty for exporter only key derivation.
-        // assert_eq!(direct_ctx.key(), key);
-        // assert_eq!(direct_ctx.nonce(), nonce);
-        // assert_eq!(direct_ctx.exporter_secret(), exporter_secret);
+        assert_eq!(direct_ctx.key(), key);
+        assert_eq!(direct_ctx.nonce(), nonce);
+        assert_eq!(direct_ctx.exporter_secret(), exporter_secret);
         assert_eq!(direct_ctx.sequence_number(), 0);
 
         // Test key pair derivation.
